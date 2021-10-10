@@ -1,0 +1,129 @@
+@import '../../utils/constants.scss';
+.sign-in-page {
+  .Wave {
+    position: fixed;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+  }
+  .sign-in-page-container {
+    width: 100%;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 7rem;
+    padding: 0 2rem;
+    .sign-in-img {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .log-in-admin-image {
+        width: 600px;
+      }
+    }
+    .sign-in-container {
+      display: flex;
+      justify-content: center;
+      form {
+        width: 400px;
+        direction: rtl;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        h2 {
+          font-size: 2.9rem;
+          margin: 15px 0;
+        }
+        .input-div {
+          display: grid;
+          grid-template-columns: 7% 93%;
+          place-items: center;
+          margin: 10px 0;
+          padding: 7px;
+          border: 2px solid $primarycolor;
+          border-radius: 10px;
+          width: 100%;
+          .input-icons {
+            width: 17px;
+          }
+          .input-box {
+            border: none;
+            font-size: 15px;
+            padding: 5px;
+            width: 100%;
+            font-family: Tajawal;
+            // font-weight: 500;
+          }
+          .input-div.one {
+            margin-top: 0;
+          }
+          .input-div.two {
+            margin-bottom: 14px;
+          }
+        }
+        .sign-in-button {
+          width: 100%;
+          padding: 12px;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .sign-in-page {
+    .sign-in-page-container {
+      grid-gap: 5rem;
+    }
+  }
+}
+@media screen and (max-width: 1000px) {
+  .sign-in-page {
+    .sign-in-page-container {
+      .sign-in-img {
+        justify-content: flex-end;
+
+        .log-in-admin-image {
+          width: 400px;
+        }
+      }
+      .sign-in-container {
+        form {
+          width: 290px;
+          h2 {
+            font-size: 2.4rem;
+            margin: 8px 0;
+          }
+        }
+      }
+    }
+  }
+}
+@media screen and (max-width: 900px) {
+  .sign-in-page {
+    .Wave {
+      display: none;
+    }
+    .sign-in-page-container {
+      grid-template-columns: 1fr;
+      .sign-in-img {
+        display: none;
+        // .log-in-admin-image {
+        //   width: 400px;
+        // }
+      }
+      .sign-in-container {
+        form {
+          width: 400px;
+          h2 {
+            font-size: 2.4rem;
+            margin: 8px 0;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+@import '../../utils/constants.scss';
+.home-page {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 1fr;
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas: 'users chat-area';
+  height: 100vh;
+  direction: rtl;
+
+  .users {
+    grid-area: users;
+    border-left: 2px solid $primarycolor;
+  }
+
+  .chat-area {
+    grid-area: chat-area;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-template-columns: 1fr;
+    grid-template-rows: 100px 1fr 100px;
+    gap: 0px 0px;
+    grid-template-areas:
+      'user-info'
+      'messages-area'
+      'typing-area';
+    .user-info {
+      grid-area: user-info;
+      border-bottom: 1px solid $primarycolor;
+    }
+    .messages-area {
+      grid-area: messages-area;
+    }
+    .typing-area {
+      grid-area: typing-area;
+      margin: 20px 30px;
+    }
+  }
+}

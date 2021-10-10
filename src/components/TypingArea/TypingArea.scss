@@ -1,0 +1,60 @@
+@import '../../utils/constants.scss';
+
+.typing-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: calc(100% - 60px);
+  border: 2px solid $primarycolor;
+  border-radius: 20px;
+  position: relative;
+  padding: 0 10px;
+
+  .leading {
+    display: flex;
+    justify-content: center;
+  }
+  .messages-input {
+    border: none;
+    outline: none;
+    font-size: 19px;
+    width: 100%;
+    margin: 0 15px;
+  }
+  .trailing {
+    display: flex;
+    align-items: center;
+    .send-button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      // background-color: #406ae0;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      // &:hover {
+      // background-color: #517bee;
+      // }
+      .send-icon {
+        width: 25px;
+        height: 25px;
+        margin-right: 3px;
+        fill: $primarycolor;
+      }
+    }
+  }
+  .message-input-icon {
+    width: 20px;
+    height: 20px;
+    fill: $primarycolor;
+    margin: 0 15px;
+    cursor: pointer;
+    &:hover {
+      fill: $darkGreen;
+    }
+    &:first-of-type {
+      margin-left: 0;
+    }
+  }
+}

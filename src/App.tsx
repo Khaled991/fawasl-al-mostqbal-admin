@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ReactElement, lazy, Suspense } from 'react';
+import './App.scss';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import NavBar from './components/NavBar/NavBar';
 
-function App() {
+const ChatPage = lazy(() => import('./pages/ChatPage/ChatPage'));
+const SignInPage = lazy(() => import('./pages/SignInPage/SignInPage'));
+
+const App = (): ReactElement => {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <NavBar />
+        <Switch>
+          <Suspense fallback={<div>loading...</div>}>
+            <Route exact path="/" component={SignInPage} />
+            <Route exact path="/chatpage" component={ChatPage} />
+          </Suspense>
+        </Switch>
+      </BrowserRouter>
+      <ToastContainer />
     </div>
   );
-}
+};
 
 export default App;

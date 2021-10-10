@@ -1,0 +1,30 @@
+@import '../../utils/constants.scss';
+
+.btn {
+  font-size: 18px;
+  border-radius: 15px;
+  margin: 10px;
+  padding: 15px 35px;
+  line-height: 20px;
+  font-weight: 500;
+  transition: 0.5s;
+}
+
+.btn.greenBorder {
+  border: 2px solid $primarycolor;
+  color: $primarycolor;
+  &:hover {
+    background-color: $primarycolor;
+    color: $whiteColor;
+  }
+}
+.btn.solidGreen {
+  background-color: $primarycolor;
+  border: 2px solid $primarycolor;
+  color: $whiteColor;
+  &:hover {
+    border: 2px solid $primarycolor;
+    background-color: $whiteColor;
+    color: $primarycolor;
+  }
+}
