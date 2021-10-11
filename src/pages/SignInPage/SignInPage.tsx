@@ -5,7 +5,6 @@ import LoginAdmin from '../../assets/img/login-admin.svg';
 import Email from '../../assets/icons/email.svg';
 import Lock from '../../assets/icons/lock.svg';
 import Button from '../../components/Button/Button';
-import { toast } from 'react-toastify';
 import { ShowToast } from '../../components/ShowToast/ShowToast';
 
 interface ISignInPage {
@@ -24,7 +23,7 @@ const SignInPage = ({ history }: ISignInPage): ReactElement => {
       ShowToast('كلمة المرور غير صحيحة', 'error');
     } else {
       ShowToast('تم تسجيل الدخول بنجاح', 'success');
-      history.push('/chatpage');
+      history.push('/home');
     }
   };
 
