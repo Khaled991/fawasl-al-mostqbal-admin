@@ -5,7 +5,9 @@ import LoginAdmin from '../../assets/img/login-admin.svg';
 import Email from '../../assets/icons/email.svg';
 import Lock from '../../assets/icons/lock.svg';
 import Button from '../../components/Button/Button';
-import { ShowToast } from '../../components/ShowToast/ShowToast';
+import { signInWithEmailAndPassword } from '@firebase/auth';
+import { auth } from '../../utils/firebase';
+import sha1 from 'sha1';
 
 interface ISignInPage {
   history: any;
@@ -15,16 +17,17 @@ const SignInPage = ({ history }: ISignInPage): ReactElement => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const onPressSignIn = (event: FormEvent) => {
+  const onPressSignIn = async (event: FormEvent) => {
     event.preventDefault();
-    if (email.length === 0) {
-      ShowToast('البريد الالكتروني غير صحيح', 'error');
-    } else if (password.length === 0) {
-      ShowToast('كلمة المرور غير صحيحة', 'error');
-    } else {
-      ShowToast('تم تسجيل الدخول بنجاح', 'success');
-      history.push('/home');
-    }
+    await signInWithEmailAndPassword(auth, email, sha1(password));
+    // if (email.length === 0) {
+    //   ShowToast("البريد الالكتروني غير صحيح", "error");
+    // } else if (password.length === 0) {
+    //   ShowToast("كلمة المرور غير صحيحة", "error");
+    // } else {
+    //   ShowToast("تم تسجيل الدخول بنجاح", "success");
+    //   history.push("/chatpage");
+    // }
   };
 
   const handelChangeEmail = ({ target: { value } }: any) => {
@@ -56,6 +59,8 @@ const SignInPage = ({ history }: ISignInPage): ReactElement => {
                 placeholder="البريد الالكتروني"
                 className="input-box"
                 onChange={handelChangeEmail}
+                name="email"
+                required
               />
             </div>
             <div className="input-div tow">
@@ -63,10 +68,12 @@ const SignInPage = ({ history }: ISignInPage): ReactElement => {
                 <img src={Lock} alt="lock" />
               </div>
               <input
+                name="password"
                 type="password"
                 placeholder="كلمة المرور"
                 className="input-box"
                 onChange={handelChangePassword}
+                required
               />
             </div>
             <Button buttonStyleType="solidGreen sign-in-button" type="submit">
