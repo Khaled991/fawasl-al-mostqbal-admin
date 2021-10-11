@@ -1,11 +1,14 @@
-import { ReactElement } from 'react';
-import './NavBar.scss';
+import { ReactElement } from "react";
+import { useSelector } from "react-redux";
+import { selectCurrentUser } from "../../redux/auth/auth.selector";
+import { auth } from "../../utils/firebase";
+import "./NavBar.scss";
 
 const NavBar = (): ReactElement => {
-  const sidebar: any = document.querySelector('.sidebar');
-  const closeBtn: any = document.querySelector('#btn');
-  const searchBtn: any = document.querySelector('.bx-search');
-
+  const sidebar: any = document.querySelector(".sidebar");
+  const closeBtn: any = document.querySelector("#btn");
+  const searchBtn: any = document.querySelector(".bx-search");
+  const currentUser = useSelector(selectCurrentUser);
   // closeBtn.addEventListener('click', () => {
   //   sidebar.classList.toggle('open');
   //   menuBtnChange(); //calling the function(optional)
@@ -39,13 +42,14 @@ const NavBar = (): ReactElement => {
             <input type="text" placeholder="Search..." />
             <span className="tooltip">Search</span>
           </li>
-          <li>
-            <a href="#">
-              <i className="bx bx-grid-alt"></i>
-              <span className="links_name">Dashboard</span>
-            </a>
-            <span className="tooltip">Dashboard</span>
-          </li>
+          {currentUser ? (
+            <li onClick={() => auth.signOut()}>
+              <div style={{ color: "#fff", cursor: "pointer" }}>
+                <span>Logout</span>
+              </div>
+              <span className="tooltip">Logout</span>
+            </li>
+          ) : null}
           <li>
             <a href="#">
               <i className="bx bx-user"></i>
