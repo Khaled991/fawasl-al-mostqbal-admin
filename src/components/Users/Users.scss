@@ -10,7 +10,7 @@
     width: 100%;
     margin-top: 15px;
 
-    margin-bottom: 15px;
+    // margin-bottom: 15px;
     height: 85px;
     padding: 0 20px;
 
@@ -37,30 +37,30 @@
         word-spacing: 10;
       }
     }
-    .search-box {
-      display: flex;
-      border: 2px solid $primarycolor;
-      width: 100%;
-      border-radius: 10px;
-      height: 40px;
-      padding: 5px;
-      margin: 15px 0 0 0;
-      align-items: center;
+    // .search-box {
+    //   display: flex;
+    //   border: 2px solid $primarycolor;
+    //   width: 100%;
+    //   border-radius: 10px;
+    //   height: 40px;
+    //   padding: 5px;
+    //   margin: 15px 0 0 0;
+    //   align-items: center;
 
-      .search-icon {
-        width: 25px;
-        padding: 2px;
-        margin: 0 5px;
-        fill: $primarycolor;
-      }
-      .search-input {
-        width: 100%;
-        height: 100%;
-        outline: none;
-        border: none;
-        font-size: 16px;
-      }
-    }
+    //   .search-icon {
+    //     width: 25px;
+    //     padding: 2px;
+    //     margin: 0 5px;
+    //     fill: $primarycolor;
+    //   }
+    //   .search-input {
+    //     width: 100%;
+    //     height: 100%;
+    //     outline: none;
+    //     border: none;
+    //     font-size: 16px;
+    //   }
+    // }
   }
 
   .my-friends-container {

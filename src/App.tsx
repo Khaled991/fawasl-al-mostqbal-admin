@@ -4,25 +4,25 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'boxicons/css/boxicons.css';
 import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
-import NavBar from './components/NavBar/NavBar';
-import {
-  auth,
-  convertAuthSnapshotToMap,
-  createNewAccount,
-  NewUser,
-} from './utils/firebase';
+import { auth, convertAuthSnapshotToMap } from './utils/firebase';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentUserAction } from './redux/auth/auth.actions';
 import WithLoading from './components/WithLoading/WithLoading';
 import Loading from './components/loading/loading';
 import { selectCurrentUser } from './redux/auth/auth.selector';
+import SideBar from './components/SideBar/SideBar';
 
 const ChatPage = lazy(() => import('./pages/ChatPage/ChatPage'));
 const SignInPage = lazy(() => import('./pages/SignInPage/SignInPage'));
+const ProblemTablePage = lazy(
+  () => import('./pages/ProblemTablePage/ProblemTablePage')
+);
 
 const ChatPageWithLoading = WithLoading(ChatPage);
 const SignInPageWithLoading = WithLoading(SignInPage);
+const ProblemTablePageWithLoading = WithLoading(ProblemTablePage);
 
+const currentPath = window.location.href;
 const App = (): ReactElement => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -35,7 +35,7 @@ const App = (): ReactElement => {
         const currentUser = convertAuthSnapshotToMap(userAuth);
 
         dispatch(setCurrentUserAction(currentUser));
-        history.push('/chatpage');
+        history.push(currentPath.split(window.location.host)[1]);
       } else {
         dispatch(setCurrentUserAction(userAuth));
       }
@@ -46,30 +46,52 @@ const App = (): ReactElement => {
   }, [dispatch, history]);
 
   return (
-    <div className="App">
-      {currentUser ? <NavBar /> : null}
-      <Switch>
+    <div className="app">
+      {currentUser ? <SideBar /> : null}
+      <div className="pr-0 md:pr-32 pt-16 md:pt-0">
         <Suspense fallback={<Loading />}>
-          <Route
-            exact
-            path="/"
-            render={props => (
-              <SignInPageWithLoading isLoading={isLoading} otherProps={props} />
-            )}
-          />
-          <Route
-            exact
-            path="/chatpage"
-            render={props =>
-              currentUser ? (
-                <ChatPageWithLoading isLoading={isLoading} otherProps={props} />
-              ) : (
-                <Redirect to="/" />
-              )
-            }
-          />
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={props => (
+                <SignInPageWithLoading
+                  isLoading={isLoading}
+                  otherProps={props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path="/chatpage"
+              render={props =>
+                currentUser ? (
+                  <ChatPageWithLoading
+                    isLoading={isLoading}
+                    otherProps={props}
+                  />
+                ) : (
+                  <Redirect to="/" />
+                )
+              }
+            />
+            <Route
+              exact
+              path="/problemtable"
+              render={props =>
+                currentUser ? (
+                  <ProblemTablePageWithLoading
+                    isLoading={isLoading}
+                    otherProps={props}
+                  />
+                ) : (
+                  <Redirect to="/" />
+                )
+              }
+            />
+          </Switch>
         </Suspense>
-      </Switch>
+      </div>
       <ToastContainer />
     </div>
   );

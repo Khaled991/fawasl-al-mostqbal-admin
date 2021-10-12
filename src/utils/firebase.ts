@@ -1,20 +1,23 @@
-import "firebase/firestore";
-import "firebase/auth";
-import { getAuth } from "firebase/auth";
-import { doc, getFirestore, setDoc, Timestamp } from "firebase/firestore";
-import { initializeApp } from "@firebase/app";
-import { createUserWithEmailAndPassword, User } from "@firebase/auth";
-import sha1 from "sha1";
-import { ICurrentUser } from "../redux/auth/auth.models";
+import 'firebase/firestore';
+import 'firebase/auth';
+import { getAuth } from 'firebase/auth';
+import { doc, getFirestore, setDoc, Timestamp } from 'firebase/firestore';
+import { initializeApp } from '@firebase/app';
+import {
+  createUserWithEmailAndPassword,
+  // , User
+} from '@firebase/auth';
+import sha1 from 'sha1';
+// import { ICurrentUser } from "../redux/auth/auth.models";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA9Q7OLg68FKV_ntGoSMeN8_Q7LrAHyzc4",
-  authDomain: "fwasel-al-mostaqbal.firebaseapp.com",
-  projectId: "fwasel-al-mostaqbal",
-  storageBucket: "fwasel-al-mostaqbal.appspot.com",
-  messagingSenderId: "278728204932",
-  appId: "1:278728204932:web:224c0d7971b3d9533958d1",
-  measurementId: "G-8N9VDXG7HN",
+  apiKey: 'AIzaSyA9Q7OLg68FKV_ntGoSMeN8_Q7LrAHyzc4',
+  authDomain: 'fwasel-al-mostaqbal.firebaseapp.com',
+  projectId: 'fwasel-al-mostaqbal',
+  storageBucket: 'fwasel-al-mostaqbal.appspot.com',
+  messagingSenderId: '278728204932',
+  appId: '1:278728204932:web:224c0d7971b3d9533958d1',
+  measurementId: 'G-8N9VDXG7HN',
 };
 
 initializeApp(firebaseConfig);
@@ -68,7 +71,7 @@ export const createNewAccount = async (newUserData: NewUser) => {
     newUserData.password
   );
 
-  const userRef = doc(getFirestore(), "users", user.uid);
+  const userRef = doc(getFirestore(), 'users', user.uid);
   await setDoc(userRef, { email: newUserData.email });
 };
 

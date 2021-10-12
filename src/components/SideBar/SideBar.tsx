@@ -1,125 +1,138 @@
-import { ReactElement, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import './SideBar.scss';
+import { ReactComponent as Logo } from '../../assets/img/logo.svg';
+import Chat from '../../assets/icons/chat.svg';
+import ServicesIcon from '../../assets/icons/services.svg';
+import Complaint from '../../assets/icons/complaint.svg';
+import SignOut from '../../assets/icons/sign-out.svg';
+import { auth } from './../../utils/firebase';
+import { selectCurrentUser } from '../../redux/auth/auth.selector';
+import { useSelector } from 'react-redux';
+interface INavBarData {
+  icon: string;
+  path: string;
+  label: string;
+}
 
-const SideBar = (): ReactElement => {
-  const [isShrink, setIsShrink] = useState<boolean>(false);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  const shortcuts = useRef<HTMLHeadingElement>(null);
-  const active_tab = useRef<HTMLDivElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
-
-  const onPressShrinkBtn = () => {
-    // document.body.classList.toggle('shrink');
-    setIsShrink(!isShrink);
-    setTimeout(moveActiveTab, 400);
-    setIsHovered(true);
-    setTimeout(() => {
-      setIsHovered(false);
-    }, 500);
-  };
-
-  const moveActiveTab = () => {
-    let topPosition = activeIndex * 58 + 2.5;
-
-    if (activeIndex > 3) {
-      topPosition += shortcuts.current!.clientHeight;
+function useOutsideCloseNavbar(
+  ref: React.MutableRefObject<any>,
+  closeNavBar: () => void
+) {
+  useEffect(() => {
+    /**
+     * Alert if clicked on outside of element
+     */
+    function handleClickOutside(event: any) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        closeNavBar();
+      }
     }
 
-    active_tab.current!.style.top = `${topPosition}px`;
-  };
-  const changeLink = (i: number) => {
-    setActiveIndex(i);
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ref]);
+}
 
-    moveActiveTab();
-  };
+const SideBar = () => {
+  const wrapperRef = useRef(null);
+  const [navbarIsActive, setNavbarIsActive] = useState(false);
+  const [activePage, setActivePage] = useState('');
+  const currentUser = useSelector(selectCurrentUser);
 
-  const showTooltip = (i: number) => setHoveredIndex(i);
+  useOutsideCloseNavbar(wrapperRef, closeNavBar);
+
+  function closeNavBar(): void {
+    setNavbarIsActive(false);
+  }
+
+  const navBarData: INavBarData[] = [
+    {
+      path: '/chatpage',
+      icon: Chat,
+      label: 'محادثة',
+    },
+    {
+      path: '/problemtable',
+      icon: Complaint,
+      label: 'الشكاوي',
+    },
+    {
+      path: '/services',
+      icon: ServicesIcon,
+      label: 'طلبات خاصة',
+    },
+  ];
+  function onClickNavbarLink(path: string): void {
+    setActivePage(path);
+    closeNavBar();
+  }
+  const location = useLocation();
+
+  useEffect(() => {
+    setActivePage(location.pathname);
+  }, [location.pathname]);
 
   return (
-    <div className={`nav-bar-container ${isShrink ? 'shrink' : ''}`}>
-      <nav>
-        <div className="sidebar-top">
-          <span
-            className={`shrink-btn ${isHovered ? 'hovered' : ''}`}
-            onClick={onPressShrinkBtn}
-          >
-            <i className="bx bx-chevron-left" />
-          </span>
-          <img src="./img/logo.png" className="logo" alt="" />
-          <h3 className="hide">Aqumex</h3>
-        </div>
-        <div className="search">
-          <i className="bx bx-search" />
-          <input type="text" className="hide" placeholder="Quick Search ..." />
-        </div>
-        <div className="sidebar-links">
-          <ul>
-            <div className="active-tab" ref={active_tab} />
-            {[
-              { title: 'شات', icon: 'message', link: '/chat' },
-              { title: 'Projects', icon: 'folder', link: '/chat' },
-              { title: 'Messages', icon: 'folder', link: '/chat' },
-              { title: 'Analytics', icon: 'folder', link: '/chat' },
-            ].map(({ title, icon, link }, i) => (
-              <div key={title}>
-                <Link to={link}>
-                  <li
-                    className="tooltip-element"
-                    data-tooltip={i}
-                    onMouseOver={() => showTooltip(i)}
-                  >
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                    <a
-                      onClick={() => changeLink(0)}
-                      href="#"
-                      className={`${activeIndex === 0 ? 'active' : ''}`}
-                      data-active={0}
-                    >
-                      <div className="icon">
-                        <i className={`bx bx-${icon}`} />
-                        <i className={`bx bxs-${icon}`} />
-                      </div>
-                      <span className="link hide">{title}</span>
-                    </a>
-                  </li>
-                </Link>
-                {hoveredIndex === i ? (
-                  <div
-                    className="tooltip"
-                    ref={tooltipRef}
-                    style={{ top: 30 + 60 * i }}
-                  >
-                    <span className="show">{title}</span>
-                  </div>
-                ) : null}
-              </div>
+    <div className="z-100" ref={wrapperRef}>
+      <div
+        style={{ cursor: 'pointer' }}
+        className={`md:hidden absolute z-50 right-1 pointer flex flex-col items-end mr-2 mt-3 ${
+          navbarIsActive ? 'opacity-0' : ''
+        } transition-all duration-500`}
+        onClick={() => setNavbarIsActive(true)}
+      >
+        <div className="bg-darkColor w-10 h-1 m-1 rounded-lg" />
+        <div className="bg-darkColor w-10 h-1 m-1 rounded-lg" />
+        <div className="bg-darkColor w-8 h-1 m-1 rounded-lg" />
+      </div>
+      <nav
+        className={`navbar-items-container ${
+          navbarIsActive ? 'right-5' : ''
+        } md:right-5 transition-all duration-500 z-10`}
+      >
+        <div className="navbar-items">
+          <Link to="/chatpage">
+            <Logo className="navbar-logo" />
+          </Link>
+
+          <div className="nav-menu">
+            {navBarData.map(({ icon, path, label }) => (
+              <Link to={path} key={path}>
+                <div
+                  className={`nav-link-container ${
+                    (
+                      path === '/'
+                        ? path === activePage
+                        : activePage.includes(
+                            path === '/' ? '/' : path.replaceAll('/', '')
+                          )
+                    )
+                      ? 'active'
+                      : ''
+                  }`}
+                  onClick={() => onClickNavbarLink(path)}
+                >
+                  <img src={icon} alt="navIcon" className="nav-icon" />
+                  <span className="nav-link">{label}</span>
+                </div>
+              </Link>
             ))}
-          </ul>
-        </div>
-        <div className="sidebar-footer">
-          <a href="#s" className="account tooltip-element" data-tooltip={0}>
-            <i className="bx bx-user" />
-          </a>
-          <div className="admin-user tooltip-element" data-tooltip={1}>
-            <div className="admin-profile hide">
-              <img src="./img/face-1.png" alt="" />
-              <div className="admin-info">
-                <h3>John Doe</h3>
-                <h5>Admin</h5>
-              </div>
+          </div>
+          {currentUser ? (
+            <div
+              className={`nav-link-container`}
+              onClick={() => auth.signOut()}
+            >
+              <img src={SignOut} alt="navIcon" className="nav-icon" />
+              <span className="nav-link">تسجيل الخروج</span>
             </div>
-            <a href="#s" className="log-out">
-              <i className="bx bx-log-out" />
-            </a>
-          </div>
-          <div className="tooltip">
-            <span className="show">John Doe</span>
-            <span>Logout</span>
-          </div>
+          ) : null}
         </div>
       </nav>
     </div>
