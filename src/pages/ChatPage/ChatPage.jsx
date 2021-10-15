@@ -1,4 +1,3 @@
-import React from 'react';
 import Users from '../../components/Users/Users';
 import UserInfo from '../../components/UserInfo/UserInfo';
 import TypingArea from '../../components/TypingArea/TypingArea';
@@ -7,7 +6,7 @@ import AnnetteBlack from '../../assets/img/jenny-Wilson.jpg';
 import FloydMiles from '../../assets/img/Floyd-Miles.jpg';
 import './ChatPage.scss';
 
-const HomePage = () => {
+const ChatPage = () => {
   return (
     <div className="home-page">
       <div className="users">
@@ -19,16 +18,15 @@ const HomePage = () => {
         </div>
         <div className="messages-area">
           <MessageArea
-            name="Annette Black"
+            // name="Annette Black"
             img={AnnetteBlack}
             imgSender={FloydMiles}
           />
         </div>
-
         <TypingArea />
       </div>
     </div>
   );
 };
 
-export default HomePage;
+export default ChatPage;

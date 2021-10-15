@@ -1,31 +1,43 @@
-import { FormEvent, ReactElement, useState } from "react";
-import "./SignInPage.scss";
-import Wave from "../../assets/img/wave.svg";
-import LoginAdmin from "../../assets/img/login-admin.svg";
-import Email from "../../assets/icons/email.svg";
-import Lock from "../../assets/icons/lock.svg";
-import Button from "../../components/Button/Button";
-import { signInWithEmailAndPassword } from "@firebase/auth";
-import { auth } from "../../utils/firebase";
-import sha1 from "sha1";
+import { FormEvent, ReactElement, useState } from 'react';
+import './SignInPage.scss';
+import Wave from '../../assets/img/wave.svg';
+import LoginAdmin from '../../assets/img/login-admin.svg';
+import Email from '../../assets/icons/email.svg';
+import Lock from '../../assets/icons/lock.svg';
+import Button from '../../components/Button/Button';
+import { signInWithEmailAndPassword } from '@firebase/auth';
+import { auth } from '../../utils/firebase';
+import sha1 from 'sha1';
+import { ShowToast } from '../../components/ShowToast/ShowToast';
 
 interface ISignInPage {
   history: any;
 }
 
 const SignInPage = ({ history }: ISignInPage): ReactElement => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const onPressSignIn = async (event: FormEvent) => {
     event.preventDefault();
-    await signInWithEmailAndPassword(auth, email, sha1(password));
+    try {
+      await signInWithEmailAndPassword(auth, email, sha1(password));
+      ShowToast('تم تسجيل الدخول بنجاح', 'success');
+    } catch (error: any) {
+      console.log(error.toString());
+      if (error.toString().includes('wrong-password'))
+        ShowToast('كلمة المرور غير صحيحة', 'error');
+      else if (error.toString().includes('user-not-found'))
+        ShowToast('البريد الالكتروني غير صحيح', 'error');
+      else if (error.toString().includes('too-many-requests'))
+        ShowToast(
+          'تم ادخال كلمة المرور بشكل خاطئ عدة مرات متتالية، الرجاء المحاولة مرة أخرى لاحقاً',
+          'error'
+        );
+    }
     // if (email.length === 0) {
-    //   ShowToast("البريد الالكتروني غير صحيح", "error");
     // } else if (password.length === 0) {
-    //   ShowToast("كلمة المرور غير صحيحة", "error");
     // } else {
-    //   ShowToast("تم تسجيل الدخول بنجاح", "success");
     //   history.push("/chatpage");
     // }
   };

@@ -1,22 +1,22 @@
 // import axios from 'axios';
-import { useEffect, useState } from "react";
+import { useEffect } from 'react';
 
-import { ReactComponent as Search } from "../../assets/icons/search.svg";
+// import { ReactComponent as Search } from '../../assets/icons/search.svg';
 // import { isTypingState } from '../UserInfo/UserInfo';
-import "./Users.scss";
-import { getChatTabs } from "../../redux/chat/chat.utils";
-import { useDispatch, useSelector } from "react-redux";
-import { setChatTabsAction } from "../../redux/chat/chat.actions";
-import { selectChatTabs } from "../../redux/chat/chat.selector";
-import { IChatTab } from "../../redux/chat/chat.models";
-import { Dispatch } from "redux";
+import './Users.scss';
+import { getChatTabs } from '../../redux/chat/chat.utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { setChatTabsAction } from '../../redux/chat/chat.actions';
+import { selectChatTabs } from '../../redux/chat/chat.selector';
+import { IChatTab } from '../../redux/chat/chat.models';
+import { Dispatch } from 'redux';
 
 // export const usersState = atom({ key: 'usersState', default: [] });
 
 const Users = ({ img, name }: any) => {
   // const [isTyping] = useRecoilState(isTypingState);
   // const [users, setUsers] = useRecoilState(usersState);
-  const [searchValue, setSearchValue] = useState("");
+  // const [searchValue, setSearchValue] = useState('');
   const dispatch: Dispatch = useDispatch();
   const chatTabs: IChatTab[] = useSelector(selectChatTabs);
   // useEffect(() => {
@@ -32,9 +32,9 @@ const Users = ({ img, name }: any) => {
   // );
   // const filterUsersNotiMsg = users.filter(user => user.messages.length);
 
-  const onChangeSearchField = ({ target: { value } }: any) => {
-    setSearchValue(value);
-  };
+  // const onChangeSearchField = ({ target: { value } }: any) => {
+  // setSearchValue(value);
+  // };
   // const allMsgCount = filterUsers.reduce((accumulator, currentValue) => {
   //   return accumulator + currentValue.messages.length;
   // }, 0);
@@ -55,7 +55,7 @@ const Users = ({ img, name }: any) => {
           {/* <div className="messages-receve-number">{allMsgCount}</div> */}
           {/* ) : null} */}
         </div>
-        <div className="search-box">
+        {/* <div className="search-box">
           <Search fill="#fff" className="search-icon" />
           <input
             onChange={onChangeSearchField}
@@ -64,7 +64,7 @@ const Users = ({ img, name }: any) => {
             placeholder="بحث..."
             type="text"
           />
-        </div>
+        </div> */}
       </div>
       {chatTabs.map(({ id, createdAt, text }: IChatTab) => (
         <div className="my-friends-container" key={id}>

@@ -51,8 +51,8 @@ const MessageArea = ({ img, imgSender }) => {
   }));
   return (
     <div className="message-area-container">
-      {messages.map(({ id, ...otherMessageProps }) => (
-        <ChatMessage isMe={id === uuid} {...otherMessageProps} />
+      {messages.map(({ id, ...otherMessageProps }, i) => (
+        <ChatMessage key={i} isMe={id === uuid} {...otherMessageProps} />
       ))}
     </div>
   );
