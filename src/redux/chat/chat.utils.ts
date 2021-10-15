@@ -1,117 +1,44 @@
-import { collection, doc, getDoc, getDocs } from "@firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from "@firebase/firestore";
+import {
+  DocumentData,
+  QueryDocumentSnapshot,
+} from "../../../node_modules/firebase/firestore/dist/firestore";
 import { firestore } from "../../utils/firebase";
+import { store } from "../store";
 import { toJsDateAndTimeFromFirestoreDate } from "./../../utils/firebase";
-
-// export async function sendMessageToFireStore(
-//   myMessageText: string,
-//   myUuid: string
-// ) {
-//   const myMessage: IMessageFirebase = createMessageFirebaseObjectFromText(
-//     myMessageText,
-//     myUuid
-//   );
-
-//   const batch = writeBatch(firestore);
-
-//   const chatMessagesRef = doc(
-//     firestore,
-//     "chats",
-//     myUuid,
-//     "chatMessages",
-//     myMessage.msgId!
-//   );
-//   batch.set(chatMessagesRef, myMessage);
-
-//   const lastMessageSentRef = doc(firestore, "chats", myUuid);
-//   batch.set(lastMessageSentRef, { lastMessageSent: myMessage.msgId });
-
-//   await batch.commit();
-// }
-
-// const createMessageFirebaseObjectFromText = (
-//   myMessageText: string,
-//   myUuid: string
-// ): IMessageFirebase => {
-//   return {
-//     senderId: myUuid,
-//     text: myMessageText,
-//     createdAt: new Date(),
-//   };
-// };
-
-// export function modifyMessagesState(
-//   modifiedMessage: IMessageFirebase,
-//   messagesBeforeModification: IMessageFirebase[]
-// ) {
-//   return messagesBeforeModification.map((message) =>
-//     message.msgId === modifiedMessage.msgId ? modifiedMessage : message
-//   );
-// }
-
-export const collectionMyMessagesRef = (myUuid: string) =>
-  collection(firestore, "chats", myUuid, "chatMessages");
-
-// export const getMoreTenMessagesQuery = () => {
-//   return query(
-//     collectionMyMessagesRef(store.getState().auth.uuid),
-//     orderBy("createdAt", "desc"),
-//     startAfter(store.getState().chat.lastLoadedMessageDocument),
-//     limit(10)
-//   );
-// };
-
-// export const getLastTenMessagesQuery = () => {
-//   return query(
-//     collectionMyMessagesRef(store.getState().auth.uuid),
-//     orderBy("createdAt", "desc"),
-//     limit(10)
-//   );
-// };
-
-// export async function getTenMessages(): Promise<
-//   [IMessageFirebase[], QueryDocumentSnapshot<DocumentData>]
-// > {
-//   const lastLoadedMessageDocument =
-//     store.getState().chat.lastLoadedMessageDocument;
-
-//   const messagesDocSnap = await getDocs(
-//     lastLoadedMessageDocument
-//       ? getMoreTenMessagesQuery()
-//       : getLastTenMessagesQuery()
-//   );
-
-//   const messages: IMessageFirebase[] = messagesDocSnap.docs.map(
-//     (doc) => doc.data() as IMessageFirebase
-//   );
-
-//   const lastLoadedMessageDocumentIndex = messagesDocSnap.docs.length - 1;
-
-//   return [
-//     messages.reverse(),
-//     messagesDocSnap.docs[lastLoadedMessageDocumentIndex],
-//   ];
-// }
 
 export const getChatTabs = async () => {
   const chatsRef = collection(firestore, "chats");
+  const chatsQuery = query(
+    chatsRef,
+    where("currentAdminPeer", "in", ["ajciascjsac", null])
+  );
 
-  const chatsSnapShot = await getDocs(chatsRef);
+  const chatsSnapShot = await getDocs(chatsQuery);
 
   const chatTabs = await Promise.all(
-    chatsSnapShot.docs.map(async (chatsDoc) => {
-      const { lastMessageSent } = chatsDoc.data();
-      const lastMessageSentRef = doc(
-        firestore,
-        "chats",
-        chatsDoc.id,
-        "chatMessages",
-        lastMessageSent
-      );
-      const lasMessage = await getDoc(lastMessageSentRef);
+    chatsSnapShot.docs.map(async (chatDoc) => {
+      const lasMessage = await getLastSentMessageDetails(chatDoc);
       const { createdAt, text } = lasMessage.data()!;
 
+      const { currentAdminPeer } = chatDoc.data();
+      console.log({ currentAdminPeer });
+
+      // const lastTenMessagesSnapShot = await getLastTenMessagesSnapShot();
+
+      // console.log(lastTenMessagesSnapShot);
+
       return {
-        id: chatsDoc.id,
+        id: chatDoc.id,
         createdAt: toJsDateAndTimeFromFirestoreDate(createdAt),
         text,
       };
@@ -119,3 +46,34 @@ export const getChatTabs = async () => {
   );
   return chatTabs;
 };
+
+const getLastSentMessageDetails = async (
+  chatDoc: QueryDocumentSnapshot<DocumentData>
+) => {
+  const { lastMessageSent } = chatDoc.data();
+  const chatId = chatDoc.id;
+
+  const lastMessageSentRef = doc(
+    firestore,
+    "chats",
+    chatId,
+    "chatMessages",
+    lastMessageSent
+  );
+
+  return await getDoc(lastMessageSentRef);
+};
+
+const getLastTenMessagesSnapShot = async () =>
+  await getDocs(getLastTenMessagesQuery);
+
+export const getLastTenMessagesQuery = query(
+  collection(
+    firestore,
+    "chats",
+    store.getState().auth.currentUser!.uid!,
+    "chatMessages"
+  ),
+  orderBy("createdAt", "desc"),
+  limit(10)
+);
